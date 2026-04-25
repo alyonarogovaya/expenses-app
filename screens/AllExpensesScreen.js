@@ -1,10 +1,15 @@
-import { Text, View } from 'react-native';
+import { useExpenses } from '../context/ExpensesContext';
+import ExpensesOutput from '../components/expenses/ExpensesOutput';
 
 function AllExpensesScreen() {
+  const { expenses } = useExpenses();
+
   return (
-    <View>
-      <Text>All</Text>
-    </View>
+    <ExpensesOutput
+      expenses={expenses}
+      expensesPeriod="Total"
+      fallbackText="No registered expenses found!"
+    />
   );
 }
 
