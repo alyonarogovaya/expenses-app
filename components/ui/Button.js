@@ -33,6 +33,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: GlobalStyles.colors.primary700,
     alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: 'transparent',
   },
   text: {
     color: GlobalStyles.colors.primary50,
@@ -40,9 +43,7 @@ const styles = StyleSheet.create({
   },
   outlined: {
     backgroundColor: 'transparent',
-    borderWidth: 1,
     borderColor: GlobalStyles.colors.primary50,
-    borderRadius: 8,
   },
   outlinedText: {
     color: GlobalStyles.colors.primary50,

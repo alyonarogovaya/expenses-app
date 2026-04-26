@@ -11,28 +11,34 @@ import { useRef } from 'react';
 function FormField({
   label,
   placeholder,
-  keyboardType,
+  keyboardType = 'default',
   value,
   onChangeText,
   error,
   onBlur,
+  ...props
 }) {
   const inputRef = useRef();
 
   return (
     <View style={styles.formField}>
       <TouchableOpacity onPress={() => inputRef.current.focus()}>
-        <Text style={styles.label}>{label}</Text>
+        <Text style={[styles.label, error && styles.labelError]}>{label}</Text>
       </TouchableOpacity>
 
       <TextInput
         ref={inputRef}
         keyboardType={keyboardType}
-        style={[styles.input, error && styles.inputError]}
+        style={[
+          styles.input,
+          props.multiline && styles.inputMultiline,
+          error && styles.inputError,
+        ]}
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
         onBlur={onBlur}
+        {...props}
       />
 
       {error && <Text style={styles.errorText}>{error}</Text>}
@@ -44,19 +50,28 @@ export default FormField;
 
 const styles = StyleSheet.create({
   formField: {
-    marginBottom: 12,
+    marginBottom: 16,
+    marginHorizontal: 4,
   },
   label: {
     fontSize: 12,
-    color: GlobalStyles.colors.primary50,
+    color: GlobalStyles.colors.primary100,
     marginBottom: 4,
   },
+  labelError: {
+    color: GlobalStyles.colors.error500,
+  },
   input: {
-    backgroundColor: GlobalStyles.colors.primary50,
-    padding: 8,
+    backgroundColor: GlobalStyles.colors.primary100,
+    padding: 6,
     borderRadius: 4,
     color: GlobalStyles.colors.primary700,
     fontWeight: 'bold',
+    fontSize: 18,
+  },
+  inputMultiline: {
+    minHeight: 100,
+    textAlignVertical: 'top',
   },
   inputError: {
     borderColor: 'red',

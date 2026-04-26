@@ -3,31 +3,19 @@ import { StyleSheet, View } from 'react-native';
 import IconButton from '../components/ui/IconButton';
 import { GlobalStyles } from '../constants/styles';
 import { useExpenses } from '../context/ExpensesContext';
-import Button from '../components/ui/Button';
+import ExpenseForm from '../components/expenses/ExpenseForm';
 
 function ManageExpenseScreen({ route, navigation }) {
   const expenseId = route.params?.expenseId;
   const isEditing = !!expenseId;
-  const { deleteExpense, addExpense, updateExpense } = useExpenses();
+  const { deleteExpense, expenses } = useExpenses();
+  const itemToEdit = expenses.find((expense) => expense.id === expenseId);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       title: isEditing ? 'Edit Expense' : 'Add Expense',
     });
   }, [navigation, isEditing]);
-
-  const cancelHandler = () => {
-    navigation.goBack();
-  };
-
-  const submitHandler = () => {
-    if (isEditing) {
-      updateExpense({});
-    } else {
-      addExpense({});
-    }
-    navigation.goBack();
-  };
 
   const deleteHandler = () => {
     navigation.goBack();
@@ -36,18 +24,7 @@ function ManageExpenseScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.buttonsContainer}>
-        <View style={styles.buttonContainer}>
-          <Button mode="outlined" onPress={cancelHandler}>
-            Cancel
-          </Button>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button onPress={submitHandler}>
-            {isEditing ? 'Update' : 'Add'}
-          </Button>
-        </View>
-      </View>
+      <ExpenseForm expenseId={expenseId} initialData={itemToEdit} />
       {isEditing && (
         <View style={styles.deleteContainer}>
           <IconButton
@@ -76,12 +53,5 @@ const styles = StyleSheet.create({
     borderTopColor: GlobalStyles.colors.primary200,
     borderTopWidth: 2,
     alignItems: 'center',
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  buttonContainer: {
-    flex: 1,
   },
 });
