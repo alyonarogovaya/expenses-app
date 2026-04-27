@@ -15,7 +15,12 @@ const DUMMY_DATA = [
 const ExpensesContext = createContext();
 
 const ExpensesProvider = ({ children }) => {
-  const [expenses, setExpenses] = useState(DUMMY_DATA);
+  const [expenses, setExpenses] = useState([]);
+
+  const setFetchedExpenses = (expenses) => {
+    const reversedExpenses = expenses.reverse();
+    setExpenses(reversedExpenses);
+  };
 
   const addExpense = (newExpense) => {
     setExpenses((prev) => [newExpense, ...prev]);
@@ -34,7 +39,13 @@ const ExpensesProvider = ({ children }) => {
   };
   return (
     <ExpensesContext.Provider
-      value={{ expenses, addExpense, deleteExpense, updateExpense }}
+      value={{
+        expenses,
+        addExpense,
+        deleteExpense,
+        updateExpense,
+        setFetchedExpenses,
+      }}
     >
       {children}
     </ExpensesContext.Provider>

@@ -1,11 +1,14 @@
-import { useLayoutEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useLayoutEffect, useState } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
 import IconButton from '../components/ui/IconButton';
 import { GlobalStyles } from '../constants/styles';
 import { useExpenses } from '../context/ExpensesContext';
 import ExpenseForm from '../components/expenses/ExpenseForm';
+import { deleteExpense as deleteExpenseApi } from '../utils/api';
+import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 function ManageExpenseScreen({ route, navigation }) {
+  const [isLoading, setIsLoading] = useState(false);
   const expenseId = route.params?.expenseId;
   const isEditing = !!expenseId;
   const { deleteExpense, expenses } = useExpenses();
@@ -17,10 +20,23 @@ function ManageExpenseScreen({ route, navigation }) {
     });
   }, [navigation, isEditing]);
 
-  const deleteHandler = () => {
-    navigation.goBack();
-    deleteExpense(expenseId);
+  const deleteHandler = async () => {
+    try {
+      setIsLoading(true);
+      await deleteExpenseApi(expenseId);
+      deleteExpense(expenseId);
+      navigation.goBack();
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Could not delete expense.');
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (isLoading) {
+    return <LoadingOverlay />;
+  }
 
   return (
     <View style={styles.container}>

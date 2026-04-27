@@ -23,8 +23,9 @@ export function isValidDateFormat(date) {
 export function isFutureDate(date) {
   const parsedDate = new Date(date);
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date();
+  tomorrow.setHours(0, 0, 0, 0);
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
-  return parsedDate > today;
+  return parsedDate >= tomorrow;
 }

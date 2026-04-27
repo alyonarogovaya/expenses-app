@@ -5,6 +5,7 @@ function ExpensesList({ data }) {
   return (
     <FlatList
       data={data}
+      keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <ExpenseItem
           title={item.title}

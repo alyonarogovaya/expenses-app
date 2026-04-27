@@ -10,6 +10,10 @@ import {
 } from '../../utils/date';
 import Button from '../ui/Button';
 import { useNavigation } from '@react-navigation/native';
+import {
+  addExpense as addExpenseApi,
+  updateExpense as updateExpenseApi,
+} from '../../utils/api';
 
 function ExpenseForm({ initialData }) {
   const { addExpense, updateExpense } = useExpenses();
@@ -20,6 +24,7 @@ function ExpenseForm({ initialData }) {
     date: initialData ? getFormattedDate(initialData.date) : '',
   });
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   const inputChangedHandler = (inputIdentifier, enteredValue) => {
@@ -39,7 +44,7 @@ function ExpenseForm({ initialData }) {
     navigation.goBack();
   };
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     const { title, amount, date } = inputValues;
     const newErrors = {};
 
@@ -75,16 +80,28 @@ function ExpenseForm({ initialData }) {
       date: new Date(date),
     };
 
-    if (initialData) {
-      updateExpense(initialData.id, data);
-    } else {
-      addExpense({
-        ...data,
-        id: new Date().toISOString(),
-      });
-    }
+    try {
+      setIsLoading(true);
+      if (initialData) {
+        await updateExpenseApi(initialData.id, data);
 
-    clearForm();
+        updateExpense(initialData.id, data);
+      } else {
+        const response = await addExpenseApi(data);
+
+        addExpense({
+          ...data,
+          id: response.name,
+        });
+      }
+
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Error', 'Could not save expense.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
